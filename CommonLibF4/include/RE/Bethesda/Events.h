@@ -689,6 +689,15 @@ namespace RE
 			kExplosion = 1 << 20
 		};
 
+		void SetAllDamageToZero()
+		{
+			flags &= 0xFFFFFE07;
+			calculatedBaseDamage = 0.f;
+			blockedDamage = 0.f;
+			reducedDamage = 0.f;
+			blockStaggerMult = 0.f;
+		}
+
 		// members
 		DamageImpactData impactData;                                                  // 00
 		ActorHandle aggressor;                                                        // 40
@@ -701,9 +710,9 @@ namespace RE
 		BSTSmartPointer<VATSCommand> VATSCommand;                                     // 78
 		const TESAmmo* ammo;                                                          // 80
 		BSTArray<BSTTuple<TESForm*, BGSTypedFormValuePair::SharedVal>>* damageTypes;  // 88
-		float healthDamage;                                                           // 90
-		float totalDamage;                                                            // 94
-		float physicalDamage;                                                         // 98
+		float healthDamage;                                                           // 90 previously calculatedBaseDamage
+		float totalDamage;                                                            // 94 previously baseDamage
+		float physicalDamage;                                                         // 98 previously totalDamage
 		float targetedLimbDamage;                                                     // 9C
 		float percentBlocked;                                                         // A0
 		float resistedPhysicalDamage;                                                 // A4
