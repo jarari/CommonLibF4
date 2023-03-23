@@ -14,8 +14,7 @@
 #include "RE/NetImmerse/NiQuaternion.h"
 #include "RE/NetImmerse/NiSmartPointer.h"
 
-namespace RE
-{
+namespace RE {
 	class BGSLoadFormBuffer;
 	class BGSSaveFormBuffer;
 	class hknpBSWorld;
@@ -28,10 +27,8 @@ namespace RE
 	class UserEventEnabledEvent;
 	struct IdleInputEvent;
 
-	struct CameraStates
-	{
-		enum CameraState : unsigned
-		{
+	struct CameraStates {
+		enum CameraState : unsigned {
 			kFirstPerson,
 			kAutoVanity,
 			kVATS,
@@ -138,8 +135,7 @@ namespace RE
 	};
 	static_assert(sizeof(ThirdPersonState) == 0x138);
 
-	class __declspec(novtable) TESCamera
-	{
+	class __declspec(novtable) TESCamera {
 	public:
 		static constexpr auto RTTI{ RTTI::TESCamera };
 		static constexpr auto VTABLE{ VTABLE::TESCamera };
@@ -173,21 +169,18 @@ namespace RE
 		static constexpr auto RTTI{ RTTI::TESCamera };
 		static constexpr auto VTABLE{ VTABLE::TESCamera };
 
-		[[nodiscard]] static PlayerCamera* GetSingleton()
-		{
+		[[nodiscard]] static PlayerCamera* GetSingleton() {
 			REL::Relocation<PlayerCamera**> singleton{ REL::ID(1171980) };
 			return *singleton;
 		}
 
-		[[nodiscard]] BSTSmartPointer<TESCameraState> GetState(CameraState a_state) const
-		{
+		[[nodiscard]] BSTSmartPointer<TESCameraState> GetState(CameraState a_state) const {
 			return cameraStates[a_state];
 		}
 
 		template <class T>
 		[[nodiscard]] BSTSmartPointer<T> GetState() const  //
-			requires(std::derived_from<T, TESCameraState>)
-		{
+			requires(std::derived_from<T, TESCameraState>) {
 			return BSTSmartPointer{ static_cast<T*>(cameraStates[T::STATE].get()) };
 		}
 
@@ -230,6 +223,12 @@ namespace RE
 		{
 			using func_t = decltype(&PlayerCamera::StopPipboyMode);
 			REL::Relocation<func_t> func{ REL::ID(811954) };
+			return func(this);
+		}
+
+		void Force3rdPerson() {
+			using func_t = decltype(&PlayerCamera::Force3rdPerson);
+			REL::Relocation<func_t> func{ REL::ID(162201) };
 			return func(this);
 		}
 

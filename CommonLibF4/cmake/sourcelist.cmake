@@ -12,6 +12,7 @@ set(SOURCES
 	include/RE/Bethesda/Actor.h
 	include/RE/Bethesda/ActorValueInfo.h
 	include/RE/Bethesda/Archive2.h
+	include/RE/Bethesda/AnimationFileManagerSingleton.h
 	include/RE/Bethesda/Atomic.h
 	include/RE/Bethesda/BGSBaseAliases.h
 	include/RE/Bethesda/BGSBodyPartDefs.h
