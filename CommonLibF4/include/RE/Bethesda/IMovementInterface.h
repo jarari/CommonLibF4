@@ -64,7 +64,7 @@ namespace RE
 		virtual bool DoShouldDecelerateToStop(float a_currentSpeed, float& a_nonDecelerateStopDistance) const = 0;   // 1C
 		virtual void DoGetMaxAngles(NiPoint3& a_maxAngles) const = 0;                                                // 1D
 		virtual void DoGetLookingLocation(NiPoint3& a_location) const = 0;                                           // 1E
-		virtual void DoGetSprinting() const = 0;                                                                     // 1F
+		virtual bool DoGetSprinting() const = 0;                                                                     // 1F
 		virtual bool DoIsHovering() const = 0;                                                                       // 20
 	};
 	static_assert(sizeof(IMovementState) == 0x8);

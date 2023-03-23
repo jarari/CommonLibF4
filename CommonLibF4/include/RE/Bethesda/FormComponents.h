@@ -69,7 +69,12 @@ namespace RE
 		class Items;
 	}
 
-	enum class ACTOR_VALUE_MODIFIER;
+	enum class ACTOR_VALUE_MODIFIER
+	{
+		Perm,
+		Temp,
+		Damage
+	};
 	enum class ENUM_FORM_ID;
 	enum class IO_TASK_PRIORITY;
 
@@ -581,12 +586,31 @@ namespace RE
 	namespace detail
 	{
 		[[nodiscard]] BGSKeyword* BGSKeywordGetTypedKeywordByIndex(KeywordType a_type, std::uint16_t a_index);
+		[[nodiscard]] uint16_t BGSKeywordGetIndexForTypedKeyword(BGSKeyword* a_keyword, KeywordType a_type);
 	}
 
 	template <KeywordType TYPE>
 	class BGSTypedKeywordValueArray
 	{
 	public:
+
+		void AddKeyword(RE::BGSKeyword* a_keyword)
+		{
+			if (a_keyword && !HasKeyword(a_keyword)) {
+				MemoryManager& mm = MemoryManager::GetSingleton();
+				BGSTypedKeywordValue<TYPE>* newArray = (BGSTypedKeywordValue<TYPE>*)mm.Allocate(2 * (size + 1), 0, false);
+				for (int i = 0; i < size; ++i) {
+					newArray[i] = array[i];
+				}
+				BGSTypedKeywordValue<TYPE> newValue;
+				newValue.keywordIndex = detail::BGSKeywordGetIndexForTypedKeyword(a_keyword, RE::BGSKeyword::KeywordType::kAttachPoint);
+				newArray[size] = newValue;
+				mm.Deallocate(array, false);
+				array = newArray;
+				++size;
+			}
+		}
+
 		[[nodiscard]] bool HasKeyword(RE::BGSKeyword* a_keyword)
 		{
 			for (std::uint32_t i = 0; i < size; ++i) {
@@ -617,6 +641,13 @@ namespace RE
 		void ClearDataComponent() override;                                     // 03
 		void CopyComponent(BaseFormComponent*) override { return; }             // 06
 		void CopyComponent(BaseFormComponent*, TESForm*) override;              // 05
+
+		void SetParentGroupNumber(BGSKeyword* keyword, uint32_t i)
+		{
+			using func_t = decltype(&RE::BGSAttachParentArray::SetParentGroupNumber);
+			REL::Relocation<func_t> func{ REL::ID(1412266) };
+			return func(this, keyword, i);
+		}
 	};
 	static_assert(sizeof(BGSAttachParentArray) == 0x18);
 
@@ -902,6 +933,13 @@ namespace RE
 		}
 
 		[[nodiscard]] std::uint32_t GetNumKeywords() const { return numKeywords; };
+
+		void RemoveKeyword(BGSKeyword* kwd)
+		{
+			using func_t = decltype(&RE::BGSKeywordForm::RemoveKeyword);
+			REL::Relocation<func_t> func{ REL::ID(921694) };
+			return func(this, kwd);
+		}
 
 		// members
 		BGSKeyword** keywords;      // 10
@@ -1619,6 +1657,13 @@ namespace RE
 		virtual std::int32_t GetMaxLevelDifference() { return 0; }             // 09
 		virtual const char* GetOverrideName() { return nullptr; }              // 0A
 		virtual bool GetCanContainFormsOfType(ENUM_FORM_ID a_type) const = 0;  // 0B
+
+		LEVELED_OBJECT* AddLeveledObject(uint16_t a_level, uint16_t a_count, int8_t a_chanceNone, TESForm* a_item, ContainerItemExtra* a_itemExtra)
+		{
+			using func_t = decltype(&TESLeveledList::AddLeveledObject);
+			REL::Relocation<func_t> func{ REL::ID(1163308) };
+			return func(this, a_level, a_count, a_chanceNone, a_item, a_itemExtra);
+		}
 
 		// members
 		TESGlobal* chanceGlobal;                                                         // 08

@@ -58,7 +58,6 @@ namespace RE
 	class BSFaceGenAnimationData;
 	class BSLightingShaderProperty;
 	class BSPathingRequest;
-	class BSTransformDeltaEvent;
 	class CombatController;
 	class CombatGroup;
 	class EffectItem;
@@ -84,6 +83,7 @@ namespace RE
 	struct AIPerkData;
 	struct BSAnimationGraphVariableCache;
 	struct BSMovementDataChangedEvent;
+	struct BSTransformDeltaEvent;
 	struct BSSubGraphActivationUpdate;
 	struct CastPowerItem;
 	struct DeferredHideLimb;
@@ -93,7 +93,14 @@ namespace RE
 
 	namespace ActorEquipManagerEvent
 	{
-		struct Event;
+		struct Event
+		{
+			uint32_t unk00;            //00
+			uint8_t pad04[0x7 - 0x4];  //04
+			bool isUnequip;            //07
+			void* unk08;               //08
+			Actor* a;                  //10	equip target
+		};
 	}
 
 	namespace MagicSystem
@@ -260,6 +267,13 @@ namespace RE
 	public:
 		static constexpr auto RTTI{ RTTI::EquippedWeaponData };
 		static constexpr auto VTABLE{ VTABLE::EquippedWeaponData };
+
+		void SetupFireSounds(Actor& a_actor, BGSObjectInstanceT<TESObjectWEAP>& a_weapon)
+		{
+			using func_t = decltype(&RE::EquippedWeaponData::SetupFireSounds);
+			REL::Relocation<func_t> func{ REL::ID(1468462) };
+			return func(this, a_actor, a_weapon);
+		}
 
 		// members
 		TESAmmo* ammo;                                                                               // 10
@@ -507,6 +521,35 @@ namespace RE
 			return func(this, a_equipIndex, a_ammo);
 		}
 
+		void SetEquippedItem(Actor* a, BGSObjectInstance& instance, const BGSEquipSlot* slot)
+		{
+			using func_t = decltype(&AIProcess::SetEquippedItem);
+			REL::Relocation<func_t> func{ REL::ID(1200276) };
+			return func(this, a, instance, slot);
+		}
+
+		//Flag should be 0x35
+		void PlayIdle(Actor* a, uint32_t flag, TESIdleForm* idle, bool unk01 = true, uint64_t unk02 = 0)
+		{
+			using func_t = decltype(&AIProcess::PlayIdle);
+			REL::Relocation<func_t> func{ REL::ID(1446774) };
+			return func(this, a, flag, idle, unk01, unk02);
+		}
+
+		bool RequestLoadAnimationsForWeaponChange(Actor& a_actor)
+		{
+			using func_t = decltype(&AIProcess::RequestLoadAnimationsForWeaponChange);
+			REL::Relocation<func_t> func{ REL::ID(666002) };
+			return func(this, a_actor);
+		}
+
+		bool IsWeaponSubgraphFinishedLoading(Actor& a_actor)
+		{
+			using func_t = decltype(&AIProcess::IsWeaponSubgraphFinishedLoading);
+			REL::Relocation<func_t> func{ REL::ID(320183) };
+			return func(this, a_actor);
+		}
+
 		// members
 		MiddleLowProcessData* middleLow;                    // 00
 		MiddleHighProcessData* middleHigh;                  // 08
@@ -603,6 +646,19 @@ namespace RE
 		kSheathing
 	};
 
+	enum class GUN_STATE : std::uint32_t
+	{
+		kDrawn,
+		kRelaxed,
+		kBlocked,
+		kAlert,
+		kReloading,
+		kThrowing,
+		kSighted,
+		kFire,
+		kFireSighted
+	};
+
 	class __declspec(novtable) ActorState :
 		public IMovementState  // 00
 	{
@@ -639,7 +695,7 @@ namespace RE
 		std::uint32_t staggered: 1;             // 0C:09
 		std::uint32_t inWrongProcessLevel: 1;   // 0C:10
 		std::uint32_t stance: 3;                // 0C:11
-		std::uint32_t gunState: 4;              // 0C:14
+		GUN_STATE gunState: 4;                  // 0C:14
 		INTERACTING_STATE interactingState: 2;  // 0C:18
 		std::uint32_t headTrackRotation: 1;     // 0C:20
 		std::uint32_t inSyncAnim: 1;            // 0C:21
@@ -921,6 +977,83 @@ namespace RE
 			using func_t = decltype(&Actor::TrespassAlarm);
 			REL::Relocation<func_t> func{ REL::ID(1109888) };
 			return func(this, a_refr, a_owner, a_crime);
+		}
+
+		void HandleDefaultAnimationSwitch()
+		{
+			using func_t = decltype(&Actor::HandleDefaultAnimationSwitch);
+			REL::Relocation<func_t> func{ REL::ID(1163130) };
+			return func(this);
+		}
+
+		void HandleItemEquip(bool bCullBone)
+		{
+			using func_t = decltype(&Actor::HandleItemEquip);
+			REL::Relocation<func_t> func{ REL::ID(164912) };
+			return func(this, bCullBone);
+		}
+
+		bool PerformAction(BGSAction* a_action, TESObjectREFR* a_target)
+		{
+			using func_t = decltype(&Actor::PerformAction);
+			REL::Relocation<func_t> func{ REL::ID(1057231) };
+			return func(this, a_action, a_target);
+		}
+
+		void SetGunState(GUN_STATE gun_state, bool unk = true)
+		{
+			using func_t = decltype(&Actor::SetGunState);
+			REL::Relocation<func_t> func{ REL::ID(977675) };
+			return func(this, gun_state, unk);
+		}
+
+		void GetAimVector(NiPoint3& out)
+		{
+			using func_t = decltype(&Actor::GetAimVector);
+			REL::Relocation<func_t> func{ REL::ID(554863) };
+			return func(this, out);
+		}
+
+		uint32_t GetCurrentCollisionGroup()
+		{
+			using func_t = decltype(&Actor::GetCurrentCollisionGroup);
+			REL::Relocation<func_t> func{ REL::ID(410500) };
+			return func(this);
+		}
+
+		CFilter GetCollisionFilter()
+		{
+			using func_t = decltype(&Actor::GetCollisionFilter);
+			REL::Relocation<func_t> func{ REL::ID(1474995) };
+			return func(this);
+		}
+
+		bool GetCurrentFireLocation(BGSEquipIndex index, NiPoint3& out)
+		{
+			using func_t = decltype(&Actor::GetCurrentFireLocation);
+			REL::Relocation<func_t> func{ REL::ID(663107) };
+			return func(this, index, out);
+		}
+
+		float GetDesiredSpeed()
+		{
+			using func_t = decltype(&Actor::GetDesiredSpeed);
+			REL::Relocation<func_t> func{ REL::ID(106892) };
+			return func(this);
+		}
+
+		NiAVObject* GetClosestBone(NiPoint3 pos, NiPoint3 dir)
+		{
+			using func_t = decltype(&Actor::GetClosestBone);
+			REL::Relocation<func_t> func{ REL::ID(1180004) };
+			return func(this, pos, dir);
+		}
+
+		bhkCharacterController* Move(float deltaTime, NiPoint3 deltaPos, bool unk)
+		{
+			using func_t = decltype(&Actor::Move);
+			REL::Relocation<func_t> func{ REL::ID(737625) };
+			return func(this, deltaTime, deltaPos, unk);
 		}
 
 		// members

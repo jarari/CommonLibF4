@@ -4,12 +4,15 @@
 #include "RE/Bethesda/BSPointerHandle.h"
 #include "RE/Bethesda/BSTArray.h"
 #include "RE/Bethesda/BSTEvent.h"
+#include "RE/Bethesda/TESObjectREFRs.h"
 #include "RE/Bethesda/UserEvents.h"
+#include "RE/NetImmerse/NiMatrix3.h"
 #include "RE/NetImmerse/NiSmartPointer.h"
 #include "RE/Scaleform/GFx/GFx_Player.h"
 
 namespace RE
 {
+	class bhkNPCollisionObject;
 	class BGSMessage;
 	class TESObjectCELL;
 	class TESObjectREFR;
@@ -380,7 +383,7 @@ namespace RE
 			REL::Relocation<func_t> func{ REL::ID(1465690) };
 			return func();
 		}
-		
+
 		// members
 		NiPointer<TESObjectREFR> actorDying;   // 00
 		NiPointer<TESObjectREFR> actorKiller;  // 08
@@ -458,8 +461,6 @@ namespace RE
 		};
 		static_assert(sizeof(CellAttachDetachEventSourceSingleton) == 0x58);
 	}
-<<<<<<< Updated upstream
-=======
 
 	struct TESObjectLoadedEvent
 	{
@@ -598,5 +599,4 @@ namespace RE
 			return singleton.get();
 		}
 	};
->>>>>>> Stashed changes
 }

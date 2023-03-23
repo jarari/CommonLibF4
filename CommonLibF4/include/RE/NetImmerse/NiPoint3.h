@@ -29,6 +29,33 @@ namespace RE
 			return (x == a_rhs.x && y == a_rhs.y && z == a_rhs.z);
 		}
 
+		[[nodiscard]] NiPoint3 operator+(const NiPoint3& pt) const
+		{
+			return NiPoint3(x + pt.x, y + pt.y, z + pt.z);
+		}
+
+		[[nodiscard]] NiPoint3 operator-(const NiPoint3& pt) const
+		{
+			return NiPoint3(x - pt.x, y - pt.y, z - pt.z);
+		}
+
+		[[nodiscard]] NiPoint3 operator*(float s) const
+		{
+			return NiPoint3(x * s, y * s, z * s);
+		}
+
+		[[nodiscard]] NiPoint3 operator/(float s) const
+		{
+			return NiPoint3(x / s, y / s, z / s);
+		}
+
+		[[nodiscard]] float GetZAngleFromVector()
+		{
+			using func_t = decltype(&NiPoint3::GetZAngleFromVector);
+			REL::Relocation<func_t> func{ REL::ID(1450064) };
+			return func(this);
+		}
+
 		// members
 		value_type x{ 0.0F };  // 0
 		value_type y{ 0.0F };  // 4

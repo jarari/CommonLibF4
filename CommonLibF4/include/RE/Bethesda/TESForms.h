@@ -17,6 +17,7 @@
 #include "RE/Bethesda/Settings.h"
 #include "RE/Bethesda/TESCondition.h"
 #include "RE/Bethesda/TESFile.h"
+#include "RE/Bethesda/bhkPickData.h"
 #include "RE/NetImmerse/NiColor.h"
 #include "RE/NetImmerse/NiFlags.h"
 #include "RE/NetImmerse/NiPoint2.h"
@@ -26,7 +27,7 @@
 namespace RE
 {
 	struct TESRegionList;
-    class TESForm;
+	class TESForm;
 	class TESObject;
 	class TESBoundObject;
 	class MagicItem;
@@ -184,6 +185,7 @@ namespace RE
 	class BGSSoundTagSet;
 	class BGSLensFlare;
 	class BGSGodRays;
+	class bhkWorld;
 
 	namespace BGSMod::Attachment
 	{
@@ -367,7 +369,8 @@ namespace RE
 		kGDRY,  // 9D GDRY X BGSGodRays
 		kOVIS,  // 9E OVIS
 
-		kTotal
+		kTotal,
+		kActiveEffect = 163
 	};
 
 	enum class _D3DBLEND;    // NOLINT(bugprone-reserved-identifier)
@@ -451,7 +454,6 @@ namespace RE
 		enum class SpellType;
 	}
 
-	class BGSBodyPart;
 	class BGSLoadFormBuffer;
 	class BGSLoadGameBuffer;
 	class BGSMusicTrack;
@@ -819,9 +821,9 @@ namespace RE
 
 		[[nodiscard]] bool Is(ENUM_FORM_ID a_type) const noexcept { return GetFormType() == a_type; }
 		template <class... Args>
-		
+
 		[[nodiscard]] bool Is(Args... a_args) const noexcept  //
-			requires(std::same_as<Args, ENUM_FORM_ID>&&...)
+			requires(std::same_as<Args, ENUM_FORM_ID> && ...)
 		{
 			return (Is(a_args) || ...);
 		}
@@ -839,16 +841,16 @@ namespace RE
 		[[nodiscard]] bool IsCreated() const noexcept { return (formID >> (8 * 3)) == 0xFF; }
 		[[nodiscard]] bool IsDeleted() noexcept { return (formFlags & (1u << 5)) != 0; }
 		[[nodiscard]] bool IsInitialized() const noexcept { return (formFlags & (1u << 3)) != 0; }
-		
+
 		[[nodiscard]] bool IsNot(ENUM_FORM_ID a_type) const noexcept { return !Is(a_type); }
 		template <class... Args>
-		
+
 		[[nodiscard]] bool IsNot(Args... a_args) const noexcept  //
-			requires(std::same_as<Args, ENUM_FORM_ID>&&...)
+			requires(std::same_as<Args, ENUM_FORM_ID> && ...)
 		{
 			return (IsNot(a_args) && ...);
 		}
-		
+
 		[[nodiscard]] bool IsPlayer() const noexcept { return GetFormID() == 0x00000007; }
 		[[nodiscard]] bool IsPlayerRef() const noexcept { return GetFormID() == 0x00000014; }
 		[[nodiscard]] bool IsWeapon() const noexcept { return Is(ENUM_FORM_ID::kWEAP); }
@@ -911,6 +913,21 @@ namespace RE
 		static constexpr auto FORM_ID{ ENUM_FORM_ID::kKYWD };
 
 		using KeywordType = RE::KeywordType;
+
+		[[nodiscard]] static uint16_t GetIndexForTypedKeyword(const BGSKeyword* a_keyword, KeywordType a_type)
+		{
+			assert(a_type < KeywordType::kTotal);
+			const auto keywords = GetTypedKeywords();
+			if (keywords) {
+				const auto& arr = (*keywords)[stl::to_underlying(a_type)];
+				for (uint16_t i = 0; i < arr.size(); ++i) {
+					if (arr[i] == a_keyword) {
+						return i;
+					}
+				}
+			}
+			return 0xFFFF;
+		}
 
 		[[nodiscard]] static BGSKeyword* GetTypedKeywordByIndex(KeywordType a_type, std::uint16_t a_index)
 		{
@@ -1456,6 +1473,13 @@ namespace RE
 			kWarnToLeave = 1u << 9,
 		};
 
+		[[nodiscard]] bhkWorld* GetbhkWorld() const
+		{
+			using func_t = decltype(&TESObjectCELL::GetbhkWorld);
+			REL::Relocation<func_t> func{ REL::ID(1326073) };
+			return func(this);
+		}
+
 		[[nodiscard]] bool GetCantWaitHere()
 		{
 			using func_t = decltype(&TESObjectCELL::GetCantWaitHere);
@@ -1503,6 +1527,13 @@ namespace RE
 			using func_t = decltype(&TESObjectCELL::GetRegionList);
 			REL::Relocation<func_t> func{ REL::ID(1565031) };
 			return func(this, a_createIfMissing);
+		}
+
+		[[nodiscard]] NiAVObject* Pick(bhkPickData& pd)
+		{
+			using func_t = decltype(&TESObjectCELL::Pick);
+			REL::Relocation<func_t> func{ REL::ID(434717) };
+			return func(this, pd);
 		}
 
 		[[nodiscard]] TESWaterForm* GetWaterType() const noexcept;
@@ -1900,7 +1931,7 @@ namespace RE
 			return func(this, a_form);
 		}
 
-	    [[nodiscard]] bool ContainsItem(const TESForm* a_form)
+		[[nodiscard]] bool ContainsItem(const TESForm* a_form)
 		{
 			using func_t = decltype(&BGSListForm::ContainsItem);
 			REL::Relocation<func_t> func{ REL::ID(688500) };
@@ -1971,6 +2002,26 @@ namespace RE
 	};
 	static_assert(sizeof(BGSPerk) == 0x98);
 
+	class __declspec(novtable) BGSBodyPart
+	{
+	public:
+		BSFixedString PartNode;               //00
+		BSFixedString VATSTarget;             //08
+		BSFixedString TwistVariation;         //10
+		BSFixedString HitReactionStart;       //18
+		BSFixedString HitReactionEnd;         //20
+		BSFixedString TwistVariationX;        //28
+		BSFixedString TwistVariationY;        //30
+		BSFixedString TwistVariationZ;        //38
+		BSFixedString unk40;                  //40
+		BSFixedString GoreEffectsTargetBone;  //48
+		void* TESModelVTable;                 //50
+		BSFixedString LimbReplacementModel;   //58
+		void* TextureFileHashes;              //60
+		void* MaterialRelated;                //68
+		uint64_t unk70;                       //70
+	};
+
 	class __declspec(novtable) BGSBodyPartData :
 		public TESForm,        // 000
 		public TESModel,       // 020
@@ -1980,6 +2031,36 @@ namespace RE
 		static constexpr auto RTTI{ RTTI::BGSBodyPartData };
 		static constexpr auto VTABLE{ VTABLE::BGSBodyPartData };
 		static constexpr auto FORM_ID{ ENUM_FORM_ID::kBPTD };
+
+		enum PartType
+		{
+			Torso,
+			Head1,
+			Eye,
+			LookAt,
+			FlyGrab,
+			Head2,
+			LeftArm1,
+			LeftArm2,
+			RightArm1,
+			RightArm2,
+			LeftLeg1,
+			LeftLeg2,
+			LeftLeg3,
+			RightLeg1,
+			RightLeg2,
+			RightLeg3,
+			Brain,
+			Weapon,
+			Root,
+			COM,
+			Pelvis,
+			Camera,
+			OffsetRoot,
+			LeftFoot,
+			RightFoot,
+			FaceTargetSource
+		};
 
 		// members
 		BGSBodyPart* partArray[26];                               // 058
@@ -2278,9 +2359,9 @@ namespace RE
 		static_assert(sizeof(KEYWORD_DATA) == 0x10);
 
 		bool IsChild(const BGSLocation* a_possibleChild) const;
-        bool IsParent(const BGSLocation* a_possibleParent) const;
+		bool IsParent(const BGSLocation* a_possibleParent) const;
 
-        // members
+		// members
 		BGSLocation* parentLoc;                                                 // 050
 		TESFaction* unreportedCrimeFaction;                                     // 058
 		BGSMusicType* musicType;                                                // 060
@@ -2325,6 +2406,13 @@ namespace RE
 		static constexpr auto RTTI{ RTTI::BGSMessage };
 		static constexpr auto VTABLE{ VTABLE::BGSMessage };
 		static constexpr auto FORM_ID{ ENUM_FORM_ID::kMESG };
+
+		void AddButton(MESSAGEBOX_BUTTON* btn)
+		{
+			using func_t = decltype(&BGSMessage::AddButton);
+			REL::Relocation<func_t> func{ REL::ID(236744) };
+			return func(this, btn);
+		}
 
 		std::uint32_t GetConvertedDescription(BSFixedString& a_result)
 		{

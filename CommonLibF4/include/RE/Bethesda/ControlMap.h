@@ -73,6 +73,20 @@ namespace RE
 			return func(this, a_context);
 		}
 
+		bool RemapButton(BSFixedString const& id, INPUT_DEVICE device, int32_t key)
+		{
+			using func_t = decltype(&ControlMap::RemapButton);
+			REL::Relocation<func_t> func{ REL::ID(11351) };
+			return func(this, id, device, key);
+		}
+
+		void SaveRemappings()
+		{
+			using func_t = decltype(&ControlMap::SaveRemappings);
+			REL::Relocation<func_t> func{ REL::ID(1141541) };
+			return func(this);
+		}
+
 		void SetTextEntryMode(bool a_enable)
 		{
 			using func_t = decltype(&ControlMap::SetTextEntryMode);

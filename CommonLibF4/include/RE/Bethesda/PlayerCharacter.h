@@ -50,7 +50,14 @@ namespace RE
 	class UserEventEnabledEvent;
 
 	struct BGSActorCellEvent;
-	struct BGSActorDeathEvent;
+	struct BGSActorDeathEvent
+	{
+		uint64_t flag;
+		float damageTaken;
+		uint32_t pad08;
+		float lastHealth;
+		uint32_t pad10;
+	};
 	struct ItemChange;
 	struct PickRefUpdateEvent;
 	struct PositionPlayerEvent;

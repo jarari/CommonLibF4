@@ -57,7 +57,12 @@ namespace RE
 	class WeaponAnimationGraphManagerHolder;
 
 	struct BSActiveGraphIfInactiveEvent;
-	struct BSAnimationGraphEvent;
+	struct BSAnimationGraphEvent
+	{
+		TESObjectREFR* refr;
+		BSFixedString animEvent;
+		BSFixedString argument;  //Something like SoundPlay.>>Descriptorname<<
+	};
 	struct BSAnimationUpdateData;
 
 	namespace ActorValueEvents
@@ -170,13 +175,41 @@ namespace RE
 		virtual bool GetGraphVariableImpl([[maybe_unused]] std::uint32_t a_graphVarID, [[maybe_unused]] float& a_out) const { return false; }                                                                                        // 10
 		virtual bool GetGraphVariableImpl([[maybe_unused]] std::uint32_t a_graphVarID, [[maybe_unused]] bool& a_out) const { return false; }                                                                                         // 11
 		virtual bool GetGraphVariableImpl([[maybe_unused]] std::uint32_t a_graphVarID, [[maybe_unused]] std::int32_t& a_out) const { return false; }                                                                                 // 12
-		virtual bool GetGraphVariableImpl(const BSFixedString& a_variable, float& a_out) const;                                                                                                                                      // 13
-		virtual bool GetGraphVariableImpl(const BSFixedString& a_variable, std::int32_t& a_out) const;                                                                                                                               // 14
-		virtual bool GetGraphVariableImpl(const BSFixedString& a_variable, bool& a_out) const;                                                                                                                                       // 15
+		virtual bool GetGraphVariableImplFloat(const BSFixedString& a_variable, float& a_out) const;                                                                                                                                 // 13
+		virtual bool GetGraphVariableImplInt(const BSFixedString& a_variable, std::int32_t& a_out) const;                                                                                                                            // 14
+		virtual bool GetGraphVariableImplBool(const BSFixedString& a_variable, bool& a_out) const;                                                                                                                                   // 15
 		virtual void PreUpdateAnimationGraphManager([[maybe_unused]] const BSTSmartPointer<BSAnimationGraphManager>& a_animGraphMgr) const { return; }                                                                               // 16
 		virtual void PostUpdateAnimationGraphManager([[maybe_unused]] const BSTSmartPointer<BSAnimationGraphManager>& a_animGraphMgr) const { return; }                                                                              // 17
 		virtual void PreLoadAnimationGraphManager([[maybe_unused]] const BSTSmartPointer<BSAnimationGraphManager>& a_animGraphMgr) { return; }                                                                                       // 18
 		virtual void PostLoadAnimationGraphManager([[maybe_unused]] const BSTSmartPointer<BSAnimationGraphManager>& a_animGraphMgr) { return; }                                                                                      // 19
+
+		bool SetGraphVariableBool(const BSFixedString& a_variable, bool a_var)
+		{
+			using func_t = decltype(&IAnimationGraphManagerHolder::SetGraphVariableBool);
+			REL::Relocation<func_t> func{ REL::ID(1437197) };
+			return func(this, a_variable, a_var);
+		};
+
+		bool SetGraphVariableFloat(const BSFixedString& a_variable, float a_var)
+		{
+			using func_t = decltype(&IAnimationGraphManagerHolder::SetGraphVariableFloat);
+			REL::Relocation<func_t> func{ REL::ID(27400) };
+			return func(this, a_variable, a_var);
+		};
+
+		bool SetGraphVariableInt(const BSFixedString& a_variable, int a_var)
+		{
+			using func_t = decltype(&IAnimationGraphManagerHolder::SetGraphVariableInt);
+			REL::Relocation<func_t> func{ REL::ID(732926) };
+			return func(this, a_variable, a_var);
+		};
+
+		bool RevertAnimationGraphManager(bool unk = true)
+		{
+			using func_t = decltype(&IAnimationGraphManagerHolder::RevertAnimationGraphManager);
+			REL::Relocation<func_t> func{ REL::ID(41382) };
+			return func(this, unk);
+		}
 	};
 	static_assert(sizeof(IAnimationGraphManagerHolder) == 0x8);
 
@@ -634,6 +667,13 @@ namespace RE
 			return func(this, a_object, a_extra, a_count, a_oldContainer, a_filter, a_overrideRef);
 		}
 
+		void AddKeyword(BGSKeyword* kwd)
+		{
+			using func_t = decltype(&RE::TESObjectREFR::AddKeyword);
+			REL::Relocation<func_t> func{ REL::ID(640674) };
+			return func(this, kwd);
+		}
+
 		void AddLockChange()
 		{
 			using func_t = decltype(&TESObjectREFR::AddLockChange);
@@ -734,11 +774,25 @@ namespace RE
 			return func(this);
 		}
 
+		void MarkAsDeleted()
+		{
+			using func_t = decltype(&TESObjectREFR::MarkAsDeleted);
+			REL::Relocation<func_t> func{ REL::ID(192661) };
+			return func(this);
+		}
+
 		void MoveRefToNewSpace(TESObjectCELL* a_interior, TESWorldSpace* a_world)
 		{
 			using func_t = decltype(&TESObjectREFR::MoveRefToNewSpace);
 			REL::Relocation<func_t> func{ REL::ID(629658) };
 			return func(this, a_interior, a_world);
+		}
+
+		void RemoveKeyword(BGSKeyword* kwd)
+		{
+			using func_t = decltype(&RE::TESObjectREFR::RemoveKeyword);
+			REL::Relocation<func_t> func{ REL::ID(281170) };
+			return func(this, kwd);
 		}
 
 		void SetAngleOnReference(const NiPoint3& a_point)
@@ -767,6 +821,41 @@ namespace RE
 			using func_t = decltype(&TESObjectREFR::SetWantsDelete);
 			REL::Relocation<func_t> func{ REL::ID(761346) };
 			return func(this, a_delete);
+		}
+
+		void RebuildBendableSpline(bool rebuildCollision, NiAVObject* target)
+		{
+			using func_t = decltype(&TESObjectREFR::RebuildBendableSpline);
+			REL::Relocation<func_t> func{ REL::ID(340319) };
+			return func(this, rebuildCollision, target);
+		}
+
+		bool GetItemCount(uint32_t& count, TESForm* item, bool countComponent)
+		{
+			using func_t = decltype(&TESObjectREFR::GetItemCount);
+			REL::Relocation<func_t> func{ REL::ID(635042) };
+			return func(this, count, item, countComponent);
+		}
+
+		void UpdateReference3D()
+		{
+			using func_t = decltype(&TESObjectREFR::UpdateReference3D);
+			REL::Relocation<func_t> func{ REL::ID(1568075) };
+			return func(this);
+		}
+
+		void GetObjectCenter(NiPoint3& center)
+		{
+			using func_t = decltype(&TESObjectREFR::GetObjectCenter);
+			REL::Relocation<func_t> func{ REL::ID(777738) };
+			return func(this, center);
+		}
+
+		void SetScale(float scale)
+		{
+			using func_t = decltype(&TESObjectREFR::SetScale);
+			REL::Relocation<func_t> func{ REL::ID(817930) };
+			return func(this, scale);
 		}
 
 		// members

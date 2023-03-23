@@ -226,6 +226,11 @@ namespace RE::BSScript
 		concept object =
 			std::derived_from<std::remove_cv_t<T>, TESForm> &&
 			requires { std::remove_cv_t<T>::FORM_ID; };
+
+		template <class T>
+		concept eobject =
+			std::derived_from<std::remove_cv_t<T>, ActiveEffect>&&
+			requires { std::remove_cv_t<T>::FORM_ID; };
 		// clang-format on
 
 		template <class T>
@@ -312,7 +317,7 @@ namespace RE::BSScript
 			static_tag<T> ||
 			((std::is_lvalue_reference_v<T> &&
 				(object<std::remove_reference_t<T>> || vmobject<std::remove_reference_t<T>>))) ||
-			cobject<T>;
+			cobject<T> || eobject<std::remove_reference_t<T>>;
 
 		template <class T>
 		concept valid_parameter =
@@ -359,6 +364,11 @@ namespace RE::BSScript
 		return static_cast<std::uint32_t>(T::FORM_ID);
 	}
 
+	template <detail::eobject T>
+	[[nodiscard]] constexpr std::uint32_t GetVMTypeID() noexcept {
+		return static_cast<std::uint32_t>(T::FORM_ID);
+	}
+
 	template <detail::cobject T>
 	[[nodiscard]] constexpr std::uint32_t GetVMTypeID() noexcept
 	{
@@ -391,6 +401,23 @@ namespace RE::BSScript
 			F4SE::log::error("failed to get type info for object"sv);
 			return std::nullopt;
 		} else {
+			return typeInfo.get();
+		}
+	}
+
+	template <detail::eobject T>
+	[[nodiscard]] std::optional<TypeInfo> GetTypeInfo() {
+		const auto game = GameVM::GetSingleton();
+		const auto vm = game ? game->GetVM() : nullptr;
+		BSTSmartPointer<ObjectTypeInfo> typeInfo;
+		if (!vm ||
+			!vm->GetScriptObjectType(GetVMTypeID<T>(), typeInfo) ||
+			!typeInfo) {
+			assert(false);
+			F4SE::log::error("failed to get type info for object"sv);
+			return std::nullopt;
+		}
+		else {
 			return typeInfo.get();
 		}
 	}
@@ -750,6 +777,32 @@ namespace RE::BSScript
 		return static_cast<T*>(result);
 	}
 
+	template <detail::eobject T>
+	[[nodiscard]] T* UnpackVariable(const Variable& a_var) {
+		const auto result = [&]() -> void* {
+			const auto game = GameVM::GetSingleton();
+			const auto vm = game ? game->GetVM() : nullptr;
+			const auto object = get<Object>(a_var);
+			if (!vm || !object) {
+				return nullptr;
+			}
+
+			const auto& handles = vm->GetObjectHandlePolicy();
+			const auto handle = object->GetHandle();
+			if (!handles.HandleIsType(static_cast<uint32_t>(ENUM_FORM_ID::kActiveEffect), handle))
+				return nullptr;
+
+			return handles.GetObjectForHandle(GetVMTypeID<T>(), handle);
+		}();
+
+		if (!result) {
+			assert(false);
+			F4SE::log::error("failed to get ActiveEffect from variable"sv);
+		}
+
+		return static_cast<T*>(result);
+	}
+
 	template <detail::cobject T>
 	[[nodiscard]] T UnpackVariable(const Variable& a_var)
 	{
@@ -1013,6 +1066,10 @@ namespace RE::BSScript
 				if constexpr (detail::static_tag<S>) {
 					return std::monostate{};
 				} else if constexpr (detail::object<std::remove_cvref_t<S>>) {
+					auto* const ptr = BSScript::UnpackVariable<std::remove_cvref_t<S>>(a_self);
+					assert(ptr != nullptr);
+					return *ptr;
+				} else if constexpr (detail::eobject<std::remove_cvref_t<S>>) {
 					auto* const ptr = BSScript::UnpackVariable<std::remove_cvref_t<S>>(a_self);
 					assert(ptr != nullptr);
 					return *ptr;

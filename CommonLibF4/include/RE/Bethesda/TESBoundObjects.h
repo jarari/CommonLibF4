@@ -762,6 +762,13 @@ namespace RE
 		static constexpr auto VTABLE{ VTABLE::BGSProjectile };
 		static constexpr auto FORM_ID{ ENUM_FORM_ID::kPROJ };
 
+		bool CollidesWithSmallTransparentLayer()
+		{
+			using func_t = decltype(&BGSProjectile::CollidesWithSmallTransparentLayer);
+			REL::Relocation<func_t> func{ REL::ID(1115694) };
+			return func(this);
+		}
+
 		// members
 		BGSProjectileData data;                                  // 0C0
 		TESModel muzzleFlashModel;                               // 150

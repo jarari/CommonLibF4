@@ -429,6 +429,20 @@ namespace RE
 			ctor(a_item, a_parentForm, a_filter);
 		}
 
+		static bool AttachModToReference(TESObjectREFR& ref, BGSMod::Attachment::Mod& mod, std::uint8_t a_attachIndex, std::uint8_t a_rank)
+		{
+			using func_t = decltype(&BGSObjectInstanceExtra::AttachModToReference);
+			REL::Relocation<func_t> func{ REL::ID(3303) };
+			return func(ref, mod, a_attachIndex, a_rank);
+		}
+
+		bool HasMod(const BGSMod::Attachment::Mod& mod)
+		{
+			using func_t = decltype(&BGSObjectInstanceExtra::HasMod);
+			REL::Relocation<func_t> func{ REL::ID(963890) };
+			return func(this, mod);
+		}
+
 		void AddMod(const BGSMod::Attachment::Mod& a_newMod, std::uint8_t a_attachIndex, std::uint8_t a_rank, bool a_removeInvalidMods)
 		{
 			using func_t = decltype(&BGSObjectInstanceExtra::AddMod);
@@ -628,6 +642,21 @@ namespace RE
 	};
 	static_assert(sizeof(ExtraPowerLinks) == 0x30);
 
+	class __declspec(novtable) ExtraBendableSplineParams : public BSExtraData
+	{
+	public:
+		static constexpr auto RTTI{ RTTI::ExtraBendableSplineParams };
+		static constexpr auto VTABLE{ VTABLE::ExtraBendableSplineParams };
+		static constexpr auto TYPE{ EXTRA_DATA_TYPE::kBendableSplineParams };
+		float unk18;      // 18
+		float thickness;  // 1C
+		float xOffset;    // 20
+		float yOffset;    // 24
+		float zOffset;    // 28
+		float unk2C;      // 2C
+	};
+	static_assert(sizeof(ExtraBendableSplineParams) == 0x30);
+
 	class BaseExtraList
 	{
 	public:
@@ -755,7 +784,8 @@ namespace RE
 		template <class T>
 		concept ExtraDataListConstraint =
 			std::derived_from<T, BSExtraData> &&
-			!std::is_pointer_v<T> &&
+			!
+		std::is_pointer_v<T> &&
 			!std::is_reference_v<T>;
 	}
 
@@ -819,6 +849,13 @@ namespace RE
 		std::unique_ptr<T> RemoveExtra()
 		{
 			return std::unique_ptr<T>{ static_cast<T*>(RemoveExtra(T::TYPE).release()) };
+		}
+
+		bool SetBendableSplineInfo(float* thickness, float* slack, NiPoint3* unk1 = nullptr, bool* unk2 = nullptr)
+		{
+			using func_t = decltype(&ExtraDataList::SetBendableSplineInfo);
+			REL::Relocation<func_t> func{ REL::ID(894306) };
+			return func(this, thickness, slack, unk1, unk2);
 		}
 
 		void SetDisplayNameFromInstanceData(BGSObjectInstanceExtra* a_instExtra, TESBoundObject* a_object, const BSTSmartPointer<TBO_InstanceData>& a_data)

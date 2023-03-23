@@ -177,6 +177,20 @@ namespace RE::BGSMod
 				return func(this, a_data);
 			}
 
+			TESObjectMISC* GetLooseMod()
+			{
+				using func_t = decltype(&Mod::GetLooseMod);
+				REL::Relocation<func_t> func{ REL::ID(1359613) };
+				return func(this);
+			}
+
+			void SetLooseMod(TESObjectMISC* misc)
+			{
+				using func_t = decltype(&Mod::SetLooseMod);
+				REL::Relocation<func_t> func{ REL::ID(123132) };
+				return func(this, misc);
+			}
+
 			// members
 			BGSAttachParentArray attachParents;                                           // 98
 			BGSTypedKeywordValueArray<KeywordType::kInstantiationFilter> filterKeywords;  // B0

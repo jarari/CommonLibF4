@@ -56,9 +56,9 @@ namespace RE
 		// override
 		virtual BSEventNotifyControl ProcessEvent(const BSAnimationGraphEvent& a_event, BSTEventSource<BSAnimationGraphEvent>* a_source) override;  // 01
 		virtual bool ShouldHandleEvent(const InputEvent*) override;                                                                                 // 02
-		virtual void HandleEvent(const ButtonEvent*) override;                                                                                      // 09
-		virtual void HandleEvent(const MouseMoveEvent*) override;                                                                                   // 07
-		virtual void HandleEvent(const ThumbstickEvent*) override;                                                                                  // 05
+		virtual void OnButtonEvent(const ButtonEvent*) override;                                                                                    // 09
+		virtual void OnMouseMoveEvent(const MouseMoveEvent*) override;                                                                              // 07
+		virtual void OnThumbstickEvent(const ThumbstickEvent*) override;                                                                            // 05
 
 		[[nodiscard]] static PipboyManager* GetSingleton()
 		{

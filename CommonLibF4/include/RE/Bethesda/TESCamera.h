@@ -184,8 +184,6 @@ namespace RE {
 			return BSTSmartPointer{ static_cast<T*>(cameraStates[T::STATE].get()) };
 		}
 
-<<<<<<< Updated upstream
-=======
 		void SetState(TESCameraState* a_newstate) const {
 			using func_t = decltype(&PlayerCamera::SetState);
 			REL::Relocation<func_t> func{ REL::ID(858847) };
@@ -197,8 +195,7 @@ namespace RE {
 			REL::Relocation<func_t> func{ REL::ID(162201) };
 			return func(this);
 		}
-
->>>>>>> Stashed changes
+    
 		// members
 		ActorHandle cameraTarget;                                                               // 064
 		BSTSmallArray<BSTSmartPointer<TESCameraState>, CameraStates::kTotal> tempReturnStates;  // 068

@@ -22,7 +22,9 @@ namespace RE
 			kJumping,
 			kInAir,
 			kClimbing,
-			kFlying
+			kFlying,
+			kSwimming,
+			kFloating
 		};
 
 		// add

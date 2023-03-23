@@ -68,6 +68,9 @@ namespace RE
 	struct PickRefUpdateEvent;
 	struct PipboyValueChangedEvent;
 	struct UIAdvanceMenusFunctionCompleteEvent;
+	struct RevertPlayerCharacterEvent;
+	struct SaveLoadMessageTypeEvent;
+	struct QueueSurvivalBumpDownMessage;
 
 	enum class HUDColorTypes
 	{
@@ -178,6 +181,23 @@ namespace RE
 	};
 	static_assert(sizeof(FlatScreenModel) == 0x20);
 
+	class __declspec(novtable) GameUIModel :
+		public BSTSingletonSDM<GameUIModel>,
+		public BSTEventSink<ApplyColorUpdateEvent>,
+		public BSTEventSink<RevertPlayerCharacterEvent>,
+		public BSTEventSink<DoBeforeNewOrLoadCompletedEvent>,
+		public BSTEventSink<SaveLoadMessageTypeEvent>,
+		public BSTEventSink<QueueSurvivalBumpDownMessage>
+	{
+	public:
+		void UpdateDataModels()
+		{
+			using func_t = decltype(&GameUIModel::UpdateDataModels);
+			REL::Relocation<func_t> func{ REL::ID(1269653) };
+			return func(this);
+		}
+	};
+
 	class IMenu :
 		public SWFToCodeFunctionHandler,  // 00
 		public BSInputEventUser           // 10
@@ -211,7 +231,7 @@ namespace RE
 			return func(this, a_event);
 		}
 
-		void HandleEvent(const ButtonEvent* a_event) override  // 08
+		void OnButtonEvent(const ButtonEvent* a_event) override  // 08
 		{
 			if (menuObj.IsObject()) {
 				auto strUserEvent = a_event->QUserEvent();
@@ -792,8 +812,8 @@ namespace RE
 			const auto idx = GetCurrentPickIndex();
 			const auto& refs = GetPickRefs();
 			return 0 <= idx && static_cast<std::size_t>(idx) < refs.size() ?
-                       refs[static_cast<std::size_t>(idx)] :
-                       ObjectRefHandle{};
+			           refs[static_cast<std::size_t>(idx)] :
+			           ObjectRefHandle{};
 		}
 
 		void SetCurrentPickREFR(stl::not_null<ObjectRefHandle*> a_refr)
@@ -1572,10 +1592,10 @@ namespace RE
 		virtual void OnMenuStackChanged(const BSFixedString& a_topMenuName, bool a_passesTopMenuTest) override;  // 09
 
 		// override (BSInputEventUser)
-		virtual bool ShouldHandleEvent(const InputEvent*) override;  // 01
-		virtual void HandleEvent(const ThumbstickEvent*) override;   // 04
-		virtual void HandleEvent(const CursorMoveEvent*) override;   // 05
-		virtual void HandleEvent(const ButtonEvent*) override;       // 08
+		virtual bool ShouldHandleEvent(const InputEvent*) override;       // 01
+		virtual void OnThumbstickEvent(const ThumbstickEvent*) override;  // 04
+		virtual void OnCursorMoveEvent(const CursorMoveEvent*) override;  // 05
+		virtual void OnButtonEvent(const ButtonEvent*) override;          // 08
 
 		// add
 		virtual void OnHideMenu();                                 // 14
@@ -1766,10 +1786,10 @@ namespace RE
 		virtual bool TryCreate() override;                                            // 1B
 
 		// override (BSInputEventUser)
-		virtual bool ShouldHandleEvent(const InputEvent*) override;  // 01
-		virtual void HandleEvent(const ThumbstickEvent*) override;   // 04
-		virtual void HandleEvent(const CursorMoveEvent*) override;   // 05
-		virtual void HandleEvent(const ButtonEvent*) override;       // 08
+		virtual bool ShouldHandleEvent(const InputEvent*) override;       // 01
+		virtual void OnThumbstickEvent(const ThumbstickEvent*) override;  // 04
+		virtual void OnCursorMoveEvent(const CursorMoveEvent*) override;  // 05
+		virtual void OnButtonEvent(const ButtonEvent*) override;          // 08
 
 		// add
 		virtual EQUIP_TYPE GetInventoryEntryEquipState(const InventoryUserUIInterfaceEntry& a_entry);                                                    // 1C
@@ -1900,10 +1920,10 @@ namespace RE
 		virtual bool OnButtonEventRelease(const BSFixedString& a_eventName) override;  // 0F
 
 		// override (BSInputEventUser)
-		virtual bool ShouldHandleEvent(const InputEvent*) override;  // 01
-		virtual void HandleEvent(const ThumbstickEvent*) override;   // 04
-		virtual void HandleEvent(const MouseMoveEvent*) override;    // 06
-		virtual void HandleEvent(const ButtonEvent*) override;       // 08
+		virtual bool ShouldHandleEvent(const InputEvent*) override;       // 01
+		virtual void OnThumbstickEvent(const ThumbstickEvent*) override;  // 04
+		virtual void OnMouseMoveEvent(const MouseMoveEvent*) override;    // 06
+		virtual void OnButtonEvent(const ButtonEvent*) override;          // 08
 
 		static void OpenLockpickingMenu(TESObjectREFR* a_lockedRef)
 		{

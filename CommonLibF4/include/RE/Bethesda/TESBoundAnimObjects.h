@@ -390,6 +390,13 @@ namespace RE
 			return *map;
 		}
 
+		[[nodiscard]] static TESNPC* GetDefaultNPC(TESNPC* npc)
+		{
+			using func_t = decltype(&TESNPC::GetDefaultNPC);
+			REL::Relocation<func_t> func{ REL::ID(1073775) };
+			return func(npc);
+		}
+
 		[[nodiscard]] std::span<BGSHeadPart*> GetHeadParts(bool a_alternate = true) const
 		{
 			if (a_alternate && UsingAlternateHeadPartList()) {
@@ -430,6 +437,13 @@ namespace RE
 				root = root->faceNPC;
 			}
 			return root;
+		}
+
+		[[nodiscard]] uint32_t GetSex() noexcept
+		{
+			using func_t = decltype(&TESNPC::GetSex);
+			REL::Relocation<func_t> func{ REL::ID(1257181) };
+			return func(this);
 		}
 
 		[[nodiscard]] TESSpellList::SpellData* GetSpellList()
