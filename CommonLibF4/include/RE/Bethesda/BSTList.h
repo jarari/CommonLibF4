@@ -2,12 +2,10 @@
 
 #include "RE/Bethesda/MemoryManager.h"
 
-namespace RE
-{
+namespace RE {
 	// forward list
 	template <class T>
-	class BSSimpleList
-	{
+	class BSSimpleList {
 	public:
 		using size_type = std::size_t;
 		using difference_type = std::uint32_t;
@@ -18,8 +16,7 @@ namespace RE
 		using const_pointer = const value_type*;
 
 	private:
-		struct node_type
-		{
+		struct node_type {
 		public:
 			F4_HEAP_REDEFINE_NEW(node_type);
 
@@ -30,16 +27,15 @@ namespace RE
 		template <class U>
 		class iterator_base :
 			public boost::stl_interfaces::iterator_interface<
-				iterator_base<U>,
-				std::forward_iterator_tag,
-				U>
-		{
+			iterator_base<U>,
+			std::forward_iterator_tag,
+			U> {
 		private:
 			using super =
 				boost::stl_interfaces::iterator_interface<
-					iterator_base<U>,
-					std::forward_iterator_tag,
-					U>;
+				iterator_base<U>,
+				std::forward_iterator_tag,
+				U>;
 
 		public:
 			using difference_type = typename super::difference_type;
@@ -55,14 +51,14 @@ namespace RE
 			template <
 				class V,
 				std::enable_if_t<
-					std::is_convertible_v<
-						typename iterator_base<V>::reference,
-						reference>,
-					int> = 0>
+				std::is_convertible_v<
+				typename iterator_base<V>::reference,
+				reference>,
+				int> = 0>
 			iterator_base(iterator_base<V> a_rhs) noexcept :
 				_proxy(a_rhs._proxy),
-				_cur(a_rhs._cur)
-			{}
+				_cur(a_rhs._cur) {
+			}
 
 			iterator_base& operator=(const iterator_base&) noexcept = default;
 			iterator_base& operator=(iterator_base&&) noexcept = default;
@@ -70,28 +66,26 @@ namespace RE
 			template <
 				class V,
 				std::enable_if_t<
-					std::is_convertible_v<
-						typename iterator_base<V>::reference,
-						reference>,
-					int> = 0>
-			iterator_base& operator=(iterator_base<V> a_rhs) noexcept
-			{
+				std::is_convertible_v<
+				typename iterator_base<V>::reference,
+				reference>,
+				int> = 0>
+			iterator_base& operator=(iterator_base<V> a_rhs) noexcept {
 				_cur = a_rhs._cur;
 				return *this;
 			}
 
-			[[nodiscard]] reference operator*() noexcept
-			{
+			[[nodiscard]] reference operator*() noexcept {
 				assert(_cur && _cur != nullptr);
 				return get()->value;
 			}
 
-			iterator_base& operator++() noexcept
-			{
+			iterator_base& operator++() noexcept {
 				if (_cur) {
 					assert(_cur != nullptr);
 					_cur = get()->next;
-				} else {
+				}
+				else {
 					*this = _proxy->begin();
 				}
 				return *this;
@@ -100,10 +94,14 @@ namespace RE
 			using super::operator++;
 
 			template <class V>
-			[[nodiscard]] bool operator==(const iterator_base<V>& a_rhs) noexcept
-			{
+			[[nodiscard]] bool operator==(const iterator_base<V>& a_rhs) noexcept {
 				assert(_proxy == a_rhs._proxy);
 				return _cur == a_rhs._cur;
+			}
+
+			template <class V>
+			[[nodiscard]] bool operator!=(const iterator_base<V>& a_rhs) noexcept {
+				return !(*this == a_rhs);
 			}
 
 		protected:
@@ -112,11 +110,10 @@ namespace RE
 
 			iterator_base(BSSimpleList<T>* a_proxy, std::optional<node_type*> a_cur) noexcept :
 				_proxy(a_proxy),
-				_cur(a_cur)
-			{}
+				_cur(a_cur) {
+			}
 
-			[[nodiscard]] node_type* get() const noexcept
-			{
+			[[nodiscard]] node_type* get() const noexcept {
 				assert(_cur);
 				return _cur.value();
 			}
@@ -140,8 +137,7 @@ namespace RE
 
 		// 5)
 		template <class InputIt>
-		BSSimpleList(InputIt a_first, InputIt a_last)
-		{
+		BSSimpleList(InputIt a_first, InputIt a_last) {
 			assign(a_first, a_last);
 		}
 
@@ -150,29 +146,26 @@ namespace RE
 
 		// 8)
 		BSSimpleList(BSSimpleList&& a_rhs) noexcept :
-			_root(std::exchange(a_rhs._root, node_type{}))
-		{}
+			_root(std::exchange(a_rhs._root, node_type{})) {
+		}
 
 		// 10)
 		explicit BSSimpleList(std::initializer_list<value_type> a_init) { assign(a_init.begin(), a_init.end()); }
 
 		~BSSimpleList() { clear(); }
 
-		BSSimpleList& operator=(const BSSimpleList& a_rhs)
-		{
+		BSSimpleList& operator=(const BSSimpleList& a_rhs) {
 			assign(a_rhs.begin(), a_rhs.end());
 			return *this;
 		}
 
-		BSSimpleList& operator=(BSSimpleList&& a_rhs) noexcept
-		{
+		BSSimpleList& operator=(BSSimpleList&& a_rhs) noexcept {
 			clear();
 			_root = std::exchange(a_rhs._root, node_type{});
 			return *this;
 		}
 
-		BSSimpleList& operator=(std::initializer_list<value_type> a_init)
-		{
+		BSSimpleList& operator=(std::initializer_list<value_type> a_init) {
 			assign(a_init.begin(), a_init.end());
 			return *this;
 		}
@@ -180,16 +173,14 @@ namespace RE
 		F4_HEAP_REDEFINE_NEW(BSSimpleList<T>);
 
 		// 1)
-		void assign(size_type a_count, const_reference a_value)
-		{
+		void assign(size_type a_count, const_reference a_value) {
 			clear();
 			insert_after(cbefore_begin(), a_count, a_value);
 		}
 
 		// 2)
 		template <class InputIt>
-		void assign(InputIt a_first, InputIt a_last)
-		{
+		void assign(InputIt a_first, InputIt a_last) {
 			clear();
 			insert_after(cbefore_begin(), std::move(a_first), std::move(a_last));
 		}
@@ -198,8 +189,7 @@ namespace RE
 		void assign(std::initializer_list<T> a_ilist) { assign(a_ilist.begin(), a_ilist.end()); }
 
 		// 1)
-		[[nodiscard]] reference front() noexcept
-		{
+		[[nodiscard]] reference front() noexcept {
 			assert(!empty());
 			return *begin();
 		}
@@ -230,8 +220,7 @@ namespace RE
 		iterator insert_after(const_iterator a_pos, value_type&& a_value) { return emplace_after(a_pos, std::move(a_value)); }
 
 		// 3)
-		iterator insert_after(const_iterator a_pos, size_type a_count, const_reference a_value)
-		{
+		iterator insert_after(const_iterator a_pos, size_type a_count, const_reference a_value) {
 			const auto gen = [&]() noexcept -> const_reference { return a_value; };
 			return insert_after(
 				a_pos,
@@ -241,15 +230,13 @@ namespace RE
 
 		// 4)
 		template <class InputIt>
-		iterator insert_after(const_iterator a_pos, InputIt a_first, InputIt a_last)
-		{
+		iterator insert_after(const_iterator a_pos, InputIt a_first, InputIt a_last) {
 			const auto [first, last] = allocate_range(std::move(a_first), std::move(a_last));
 			return insert_range(a_pos, first, last);
 		}
 
 		// 5)
-		iterator insert_after(const_iterator a_pos, std::initializer_list<T> a_ilist)
-		{
+		iterator insert_after(const_iterator a_pos, std::initializer_list<T> a_ilist) {
 			return insert_after(
 				a_pos,
 				a_ilist.begin(),
@@ -257,8 +244,7 @@ namespace RE
 		}
 
 		template <class... Args>
-		iterator emplace_after(const_iterator a_pos, Args&&... a_args)
-		{
+		iterator emplace_after(const_iterator a_pos, Args&&... a_args) {
 			const auto node = new node_type{ { std::forward<Args>(a_args)... }, nullptr };
 			return insert_range(a_pos, node, node);
 		}
@@ -267,8 +253,7 @@ namespace RE
 		iterator erase_after(const_iterator a_pos) { return erase_after(a_pos, ++a_pos); }
 
 		// 2)
-		iterator erase_after(const_iterator a_first, const_iterator a_last)
-		{
+		iterator erase_after(const_iterator a_first, const_iterator a_last) {
 			assert(a_first != cend());
 			if (a_first != a_last) {
 				const auto delRange = [](node_type* a_first, node_type* a_last) {
@@ -283,13 +268,15 @@ namespace RE
 					delRange(_root.next, a_last.get());
 					if (a_last == cend()) {
 						_root = node_type{};
-					} else {
+					}
+					else {
 						// invalidates a_last, nonconforming
 						_root = std::move(*a_last.get());
 						delete a_last.get();
 						return begin();
 					}
-				} else {
+				}
+				else {
 					delRange(a_first.get()->next, a_last.get());
 					a_first.get()->next = a_last.get();
 				}
@@ -305,8 +292,7 @@ namespace RE
 		void push_front(value_type&& a_value) { emplace_front(std::move(a_value)); }
 
 		template <class... Args>
-		reference emplace_front(Args&&... a_args)
-		{
+		reference emplace_front(Args&&... a_args) {
 			return *emplace_after(cbefore_begin(), std::forward<Args>(a_args)...);
 		}
 
@@ -316,8 +302,7 @@ namespace RE
 		void resize(size_type a_count) { resize(a_count, value_type{}); }
 
 		// 2)
-		void resize(size_type a_count, const value_type& a_value)
-		{
+		void resize(size_type a_count, const value_type& a_value) {
 			size_type n = static_cast<size_type>(-1);
 			auto iter = cbefore_begin();
 			const_iterator prev;
@@ -331,14 +316,14 @@ namespace RE
 			if (iter != cend()) {
 				assert(n == a_count);
 				erase_after(iter, cend());
-			} else {
+			}
+			else {
 				assert(n != a_count);
 				insert_after(prev, a_count - n, a_value);
 			}
 		}
 
-		void swap(BSSimpleList& a_rhs)
-		{
+		void swap(BSSimpleList& a_rhs) {
 			using std::swap;
 			swap(_root.value, a_rhs._root.value);
 			swap(_root.next, a_rhs._root.next);
@@ -346,8 +331,7 @@ namespace RE
 
 	private:
 		template <class InputIt>
-		[[nodiscard]] static std::pair<node_type*, node_type*> allocate_range(InputIt a_first, InputIt a_last)
-		{
+		[[nodiscard]] static std::pair<node_type*, node_type*> allocate_range(InputIt a_first, InputIt a_last) {
 			std::pair<node_type*, node_type*> range{ nullptr, nullptr };
 			if (a_first != a_last) {
 				range.first = new node_type{ *a_first };
@@ -364,13 +348,13 @@ namespace RE
 		}
 
 		// assumes ownership of given range
-		[[nodiscard]] iterator insert_range(const_iterator a_pos, node_type* a_first, node_type* a_last)
-		{
+		[[nodiscard]] iterator insert_range(const_iterator a_pos, node_type* a_first, node_type* a_last) {
 			assert(a_pos != cend());
 			if (a_first == nullptr) {
 				assert(a_last == nullptr);
 				return a_pos.make_mutable();
-			} else {
+			}
+			else {
 				assert(a_last != nullptr);
 
 				if (a_pos == cbefore_begin()) {
@@ -381,7 +365,8 @@ namespace RE
 					a_last->next = _root.next;
 					_root = std::move(*a_first);
 					delete a_first;
-				} else {
+				}
+				else {
 					a_last->next = a_pos.get()->next;
 					a_pos.get()->next = a_first;
 				}
@@ -396,8 +381,7 @@ namespace RE
 	};
 
 	template <class T>
-	void swap(BSSimpleList<T>& a_lhs, BSSimpleList<T>& a_rhs)
-	{
+	void swap(BSSimpleList<T>& a_lhs, BSSimpleList<T>& a_rhs) {
 		a_lhs.swap(a_rhs);
 	}
 }
