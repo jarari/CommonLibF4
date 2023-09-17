@@ -507,28 +507,7 @@ TESForm* GetFormFromMod(std::string modname, uint32_t formid) {
 	if (!modname.length() || !formid)
 		return nullptr;
 	TESDataHandler* dh = TESDataHandler::GetSingleton();
-	TESFile* modFile = nullptr;
-	for (auto it = dh->files.begin(); it != dh->files.end(); ++it) {
-		TESFile* f = *it;
-		if (strcmp(f->filename, modname.c_str()) == 0) {
-			modFile = f;
-			break;
-		}
-	}
-	if (!modFile)
-		return nullptr;
-	uint8_t modIndex = modFile->compileIndex;
-	uint32_t id = formid;
-	if (modIndex < 0xFE) {
-		id |= ((uint32_t)modIndex) << 24;
-	}
-	else {
-		uint16_t lightModIndex = modFile->smallFileCompileIndex;
-		if (lightModIndex != 0xFFFF) {
-			id |= 0xFE000000 | (uint32_t(lightModIndex) << 12);
-		}
-	}
-	return TESForm::GetFormByID(id);
+	return dh->LookupForm(formid, modname);
 }
 
 const char* GetObjectClassNameImpl(const char* result, void* objBase) {
