@@ -618,37 +618,37 @@ namespace RE
 			blockStaggerMult = 0.f;
 		}
 
-		DamageImpactData impactData;
-		int8_t gap38[8];
-		ObjectRefHandle attackerHandle;
-		ObjectRefHandle victimHandle;
-		ObjectRefHandle sourceHandle;
-		int8_t gap4C[4];
-		BGSAttackData* attackData;
-		BGSObjectInstance source;
-		MagicItem* effect;
-		SpellItem* spellItem;
-		VATSCommand* VATScmd;
-		TESAmmo* ammo;
-		BSTArray<BSTTuple<TESForm*, BGSTypedFormValuePair::SharedVal>>* damageTypes;
-		float calculatedBaseDamage;
-		float baseDamage;
-		float totalDamage;
-		float blockedDamage;
-		float blockMult;
-		float reducedDamage;
-		float field_A8;
-		float blockStaggerMult;
-		float sneakAttackMult;
-		float field_B4;
-		float field_B8;
-		float field_BC;
-		float criticalDamageMult;
-		uint32_t flags;
-		BGSEquipIndex equipIndex;
-		uint32_t materialType;
-		int32_t bodypartType;
-		int8_t gapD4[4];
+		DamageImpactData impactData;                                                  //0x00
+		int8_t gap38[8];                                                              //0x38
+		ObjectRefHandle attackerHandle;                                               //0x40;
+		ObjectRefHandle victimHandle;                                                 //0x44;
+		ObjectRefHandle sourceHandle;                                                 //0x48;
+		int8_t gap4C[4];                                                              //0x4C;
+		BGSAttackData* attackData;                                                    //0x50;
+		BGSObjectInstance source;                                                     //0x58;
+		MagicItem* effect;                                                            //0x68;
+		SpellItem* spellItem;                                                         //0x70;
+		VATSCommand* VATScmd;                                                         //0x78;
+		TESAmmo* ammo;                                                                //0x80;
+		BSTArray<BSTTuple<TESForm*, BGSTypedFormValuePair::SharedVal>>* damageTypes;  //0x88;
+		float calculatedBaseDamage;                                                   //0x90;
+		float baseDamage;                                                             //0x94;
+		float totalDamage;                                                            //0x98;
+		float blockedDamage;                                                          //0x9C;
+		float blockMult;                                                              //0xA0;
+		float reducedDamage;                                                          //0xA4;
+		float field_A8;                                                               //0xA8;
+		float blockStaggerMult;                                                       //0xAC;
+		float sneakAttackMult;                                                        //0xB0;
+		float field_B4;                                                               //0xB4;
+		float field_B8;                                                               //0xB8;
+		float field_BC;                                                               //0xBC;
+		float criticalDamageMult;                                                     //0xC0;
+		uint32_t flags;                                                               //0xC4;
+		BGSEquipIndex equipIndex;                                                     //0xC8;
+		uint32_t materialType;                                                        //0xCC;
+		int32_t bodypartType;                                                         //0xD0
+		int8_t gapD4[4];                                                              //0xD4
 	};
 	static_assert(sizeof(HitData) == 0xD8);
 
@@ -666,6 +666,14 @@ namespace RE
 		int8_t gapD1[7];
 	};
 	static_assert(sizeof(TESHitEvent) == 0x108);
+
+	struct TESActiveEffectApplyRemoveEvent
+	{
+		NiPointer<TESObjectREFR> target;  // 00
+		NiPointer<TESObjectREFR> caster;  // 08
+		uint16_t uniqueID;
+		bool isApply;
+	};
 
 	class HitEventSource : public BSTEventSource<TESHitEvent>
 	{
@@ -703,6 +711,14 @@ namespace RE
 		[[nodiscard]] static MGEFApplyEventSource* GetSingleton()
 		{
 			REL::Relocation<MGEFApplyEventSource*> singleton{ REL::ID(1481228) };
+			return singleton.get();
+		}
+	};
+
+	class ActiveEffectApplyRemoveEventSource : public BSTEventSource<TESActiveEffectApplyRemoveEvent> {
+	public:
+		[[nodiscard]] static ActiveEffectApplyRemoveEventSource* GetSingleton() {
+			REL::Relocation<ActiveEffectApplyRemoveEventSource*> singleton{ REL::ID(49800) };
 			return singleton.get();
 		}
 	};
