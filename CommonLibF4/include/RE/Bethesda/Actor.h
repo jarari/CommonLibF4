@@ -159,6 +159,14 @@ namespace RE
 		kClearMountPosition = 43,
 		kClearPowerArmorExit = 44,
 	};
+	
+	enum class FIGHT_REACTION : std::uint32_t
+	{
+		kNeutral,
+		kEnemy,
+		kAlly,
+		kFriend
+	};
 
 	struct MiddleLowProcessData
 	{
@@ -589,6 +597,13 @@ namespace RE
 			using func_t = decltype(&AIProcess::StopCurrentIdle);
 			REL::Relocation<func_t> func{ REL::ID(2231705) };
 			return func(this, a_actor, a_instant, a_killFlavor);
+		}
+
+		bool EnterCombat(Actor* a_actor, Actor* a_target, Actor* a_extra = nullptr)
+		{
+			using func_t = decltype(&AIProcess::EnterCombat);
+			REL::Relocation<func_t> func{ REL::ID(1514649) };
+			return func(this, a_actor, a_target, a_extra);
 		}
 
 		// members
@@ -1224,6 +1239,132 @@ namespace RE
 			using func_t = decltype(&Actor::TrespassAlarm);
 			REL::Relocation<func_t> func{ REL::ID(2229834) };
 			return func(this, a_refr, a_owner, a_crime);
+		}
+
+		void HandleDefaultAnimationSwitch()
+		{
+			using func_t = decltype(&Actor::HandleDefaultAnimationSwitch);
+			REL::Relocation<func_t> func{ REL::ID(1163130) };
+			return func(this);
+		}
+
+		void HandleItemEquip(bool bCullBone)
+		{
+			using func_t = decltype(&Actor::HandleItemEquip);
+			REL::Relocation<func_t> func{ REL::ID(164912) };
+			return func(this, bCullBone);
+		}
+
+		bool PerformAction(BGSAction* a_action, TESObjectREFR* a_target)
+		{
+			using func_t = decltype(&Actor::PerformAction);
+			REL::Relocation<func_t> func{ REL::ID(1057231) };
+			return func(this, a_action, a_target);
+		}
+
+		void SetGunState(GUN_STATE gun_state, bool unk = true)
+		{
+			using func_t = decltype(&Actor::SetGunState);
+			REL::Relocation<func_t> func{ REL::ID(977675) };
+			return func(this, gun_state, unk);
+		}
+
+		void GetAimVector(NiPoint3& out)
+		{
+			using func_t = decltype(&Actor::GetAimVector);
+			REL::Relocation<func_t> func{ REL::ID(554863) };
+			return func(this, out);
+		}
+
+		uint32_t GetCurrentCollisionGroup()
+		{
+			using func_t = decltype(&Actor::GetCurrentCollisionGroup);
+			REL::Relocation<func_t> func{ REL::ID(410500) };
+			return func(this);
+		}
+
+		CFilter GetCollisionFilter()
+		{
+			using func_t = decltype(&Actor::GetCollisionFilter);
+			REL::Relocation<func_t> func{ REL::ID(1474995) };
+			return func(this);
+		}
+
+		bool GetCurrentFireLocation(BGSEquipIndex index, NiPoint3& out)
+		{
+			using func_t = decltype(&Actor::GetCurrentFireLocation);
+			REL::Relocation<func_t> func{ REL::ID(663107) };
+			return func(this, index, out);
+		}
+
+		float GetDesiredSpeed()
+		{
+			using func_t = decltype(&Actor::GetDesiredSpeed);
+			REL::Relocation<func_t> func{ REL::ID(106892) };
+			return func(this);
+		}
+
+		NiAVObject* GetClosestBone(NiPoint3 pos, NiPoint3 dir)
+		{
+			using func_t = decltype(&Actor::GetClosestBone);
+			REL::Relocation<func_t> func{ REL::ID(1180004) };
+			return func(this, pos, dir);
+		}
+
+		bhkCharacterController* Move(float deltaTime, NiPoint3 deltaPos, bool unk)
+		{
+			using func_t = decltype(&Actor::Move);
+			REL::Relocation<func_t> func{ REL::ID(737625) };
+			return func(this, deltaTime, deltaPos, unk);
+		}
+
+		FIGHT_REACTION GetFactionFightReaction(Actor* a_actor)
+		{
+			using func_t = decltype(&Actor::GetFactionFightReaction);
+			REL::Relocation<func_t> func{ REL::ID(1417088) };
+			return func(this, a_actor);
+		}
+
+		bool StartCombat(Actor* a_target, Actor* a_extra = nullptr)
+		{
+			using func_t = decltype(&Actor::StartCombat);
+			REL::Relocation<func_t> func{ REL::ID(765218) };
+			return func(this, a_target, a_extra);
+		}
+
+		void ForceDetect(Actor* a_actor, bool a_forceLOS, float a_forceDetectTime = -1.f)
+		{
+			using func_t = decltype(&Actor::ForceDetect);
+			REL::Relocation<func_t> func{ REL::ID(131995) };
+			return func(this, a_actor, a_forceLOS, a_forceDetectTime);
+		}
+
+		bool GetShouldAttackActor(Actor* a_target, int8_t a_unk = -1)
+		{
+			using func_t = decltype(&Actor::GetShouldAttackActor);
+			REL::Relocation<func_t> func{ REL::ID(35540) };
+			return func(this, a_target, a_unk);
+		}
+
+		int16_t RequestDetectionLevel(Actor* a_target, uint32_t a_priority = 3)
+		{
+			using func_t = decltype(&Actor::RequestDetectionLevel);
+			REL::Relocation<func_t> func{ REL::ID(943772) };
+			return func(this, a_target, a_priority);
+		}
+
+		bool IsSneaking()
+		{
+			using func_t = decltype(&Actor::IsSneaking);
+			REL::Relocation<func_t> func{ REL::ID(1173627) };
+			return func(this);
+		}
+
+		bool IsInCombatWithActor(Actor* a_target)
+		{
+			using func_t = decltype(&Actor::IsInCombatWithActor);
+			REL::Relocation<func_t> func{ REL::ID(1145625) };
+			return func(this, a_target);
 		}
 
 		// members

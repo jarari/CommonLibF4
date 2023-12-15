@@ -46,6 +46,27 @@ namespace RE
 			return func(a_projectilePos, a_projectileVelocity, a_projectileGravity, a_targetPos, a_heading, a_trajectoryPos);
 		}
 
+		inline bool CalculateProjectileLOS(Actor* a, BGSProjectile* proj, float speed, const NiPoint3& launchPos, const NiPoint3& targetPos, NiPoint3* hitPos, TESObjectREFR** collidee, float* dist)
+		{
+			typedef bool func_t(Actor*, BGSProjectile*, float, const NiPoint3&, const NiPoint3&, NiPoint3*, TESObjectREFR**, float*);
+			REL::Relocation<func_t> func{ REL::ID(798616) };
+			return func(a, proj, speed, launchPos, targetPos, hitPos, collidee, dist);
+		}
+
+		inline bool CalculateProjectileLOS(Actor* a, BGSProjectile* proj, bhkPickData& pick)
+		{
+			typedef bool func_t(Actor*, BGSProjectile*, bhkPickData&);
+			REL::Relocation<func_t> func{ REL::ID(55339) };
+			return func(a, proj, pick);
+		}
+
+		inline bool CheckLOS(Actor& a_actor, Actor& a_target)
+		{
+			typedef bool func_t(Actor&, Actor&);
+			REL::Relocation<func_t> func{ REL::ID(1403705) };
+			return func(a_actor, a_target);
+		}
+
 		static REL::Relocation<float> fWorldGravity{ REL::ID(1378547) };
 	};
 

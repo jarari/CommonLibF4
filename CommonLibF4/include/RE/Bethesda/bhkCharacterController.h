@@ -183,6 +183,13 @@ namespace RE
 
 		enum class CHARACTER_SIZE;
 
+		void UpdateState()
+		{
+			using func_t = decltype(&RE::bhkCharacterController::UpdateState);
+			REL::Relocation<func_t> func{ REL::ID(1296754) };
+			return func(this);
+		}
+
 		// add
 		virtual float GetKeepDistanceImpl() const = 0;                                                                             // 31
 		virtual void InitPhysicsSystemImpl(const bhkCharacterControllerCinfo& a_info) = 0;                                         // 32

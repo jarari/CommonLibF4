@@ -90,6 +90,13 @@ namespace RE
 			return func(this, a_data);
 		}
 
+		[[nodiscard]] ObjectRefHandle CreateProjectileAtLocation(TESBoundObject* a_form, NiPoint3 a_pos, NiPoint3 a_dir, TESObjectCELL* a_cell, TESWorldSpace* a_worldSpace)
+		{
+			using func_t = decltype(&TESDataHandler::CreateProjectileAtLocation);
+			REL::Relocation<func_t> func{ REL::ID(69438) };
+			return func(this, a_form, a_pos, a_dir, a_cell, a_worldSpace);
+		}
+
 		template <class T>
 		[[nodiscard]] BSTArray<T*>& GetFormArray() noexcept  //
 			requires(std::derived_from<T, TESForm> &&
