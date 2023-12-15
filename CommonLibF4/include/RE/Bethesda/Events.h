@@ -706,4 +706,12 @@ namespace RE
 			return singleton.get();
 		}
 	};
+
+	class ActiveEffectApplyRemoveEventSource : public BSTEventSource<TESActiveEffectApplyRemoveEvent> {
+	public:
+		[[nodiscard]] static ActiveEffectApplyRemoveEventSource* GetSingleton() {
+			REL::Relocation<ActiveEffectApplyRemoveEventSource*> singleton{ REL::ID(49800) };
+			return singleton.get();
+		}
+	};
 }
