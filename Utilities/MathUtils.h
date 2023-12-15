@@ -220,3 +220,18 @@ NiPoint3 Normalize(NiPoint3 p) {
 	}
 	return ret;
 }
+
+float easeInOutCubic(float t, float b, float c, float d) {
+	if ((t /= d / 2) < 1)
+		return c / 2 * t * t * t + b;
+	return c / 2 * ((t -= 2) * t * t + 2) + b;
+}
+
+float easeInOutQuad(float t) {
+	return t < 0.5 ? 2 * t * t : t * (4 - 2 * t) - 1;
+}
+
+float easeOutCubic(float t)
+{
+	return 1 + (--t) * t * t;
+}
