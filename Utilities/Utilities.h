@@ -378,6 +378,27 @@ namespace RE {
 			return func(container, item, reEquip);
 		}
 	}
+
+	class CombatManager {
+	public:
+		static CombatManager* GetSingleton() {
+			REL::Relocation<CombatManager**> singleton{ REL::ID(333664) };
+			return *singleton;
+		}
+
+		float GetTargetLostPercentage(Actor* a_actor) {
+			using func_t = decltype(&RE::CombatManager::GetTargetLostPercentage);
+			REL::Relocation<func_t> func{ REL::ID(154107) };
+			return func(this, a_actor);
+		}
+
+		float GetStealthPoints(Actor* a_actor)
+		{
+			using func_t = decltype(&RE::CombatManager::GetStealthPoints);
+			REL::Relocation<func_t> func{ REL::ID(233530) };
+			return func(this, a_actor);
+		}
+	};
 }
 
 char tempbuf[512] = { 0 };
@@ -723,6 +744,22 @@ bool GetPickDataAll(const NiPoint3& start, const NiPoint3& end, Actor* a, BGSPro
 	*(uint32_t*)((uintptr_t)&pick + 0xD8) = 0;
 	SetupFilter(pick, a, projForm, excludeActor);
 	return CombatUtilities::CalculateProjectileLOS(a, projForm, pick);
+}
+
+NiPoint3 GetProjectileNode(Actor* a, PlayerCamera* pcam) {
+	if (a && a->Get3D()) {
+		NiNode* endPoint = (NiNode*)a->Get3D()->GetObjectByName("ProjectileNode");
+		if (!endPoint) {
+			endPoint = (NiNode*)a->Get3D()->GetObjectByName("Weapon");
+		}
+		NiPoint3 newPos = endPoint->world.translate;
+		if (a->Get3D(true) == a->Get3D()) {
+			NiNode* camera = (NiNode*)a->Get3D()->GetObjectByName("Camera");
+			newPos = newPos + pcam->cameraRoot->world.translate - camera->world.translate;
+		}
+		return newPos;
+	}
+	return NiPoint3();
 }
 
 #pragma endregion
