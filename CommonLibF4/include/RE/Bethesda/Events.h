@@ -560,6 +560,14 @@ namespace RE
 	};
 	static_assert(sizeof(TESHitEvent) == 0x108);
 
+	struct TESActiveEffectApplyRemoveEvent
+	{
+		NiPointer<TESObjectREFR> target;  // 00
+		NiPointer<TESObjectREFR> caster;  // 08
+		uint16_t uniqueID;
+		bool isApply;
+	};
+
 	class HitEventSource : public BSTEventSource<TESHitEvent>
 	{
 	public:
@@ -596,6 +604,14 @@ namespace RE
 		[[nodiscard]] static MGEFApplyEventSource* GetSingleton()
 		{
 			REL::Relocation<MGEFApplyEventSource*> singleton{ REL::ID(1481228) };
+			return singleton.get();
+		}
+	};
+
+	class ActiveEffectApplyRemoveEventSource : public BSTEventSource<TESActiveEffectApplyRemoveEvent> {
+	public:
+		[[nodiscard]] static ActiveEffectApplyRemoveEventSource* GetSingleton() {
+			REL::Relocation<ActiveEffectApplyRemoveEventSource*> singleton{ REL::ID(49800) };
 			return singleton.get();
 		}
 	};

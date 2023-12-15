@@ -42,6 +42,14 @@ namespace RE
 			REL::Relocation<func_t> func{ REL::ID(55339) };
 			return func(a, proj, pick);
 		}
+
+		inline bool CheckLOS(Actor& a_actor, Actor& a_target)
+		{
+			typedef bool func_t(Actor&, Actor&);
+			REL::Relocation<func_t> func{ REL::ID(1403705) };
+			return func(a_actor, a_target);
+		}
+
 		static REL::Relocation<float> fWorldGravity{ REL::ID(1378547) };
 	};
 
