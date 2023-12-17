@@ -1318,6 +1318,62 @@ namespace RE
 			return func(this, deltaTime, deltaPos, unk);
 		}
 
+		void ExitCover()
+		{
+			using func_t = decltype(&Actor::ExitCover);
+			REL::Relocation<func_t> func{ REL::ID(770035) };
+			return func(this);
+		}
+
+		TESCombatStyle* GetCombatStyle()
+		{
+			using func_t = decltype(&Actor::GetCombatStyle);
+			REL::Relocation<func_t> func{ REL::ID(1270929) };
+			return func(this);
+		}
+
+		bool IsCrippled()
+		{
+			using func_t = decltype(&Actor::IsCrippled);
+			REL::Relocation<func_t> func{ REL::ID(1238666) };
+			return func(this);
+		}
+
+		bool IsFollowing()
+		{
+			using func_t = decltype(&Actor::IsFollowing);
+			REL::Relocation<func_t> func{ REL::ID(629579) };
+			return func(this);
+		}
+
+		bool IsPathValid()
+		{
+			using func_t = decltype(&Actor::IsPathValid);
+			REL::Relocation<func_t> func{ REL::ID(1522194) };
+			return func(this);
+		}
+
+		bool IsPathing()
+		{
+			using func_t = decltype(&Actor::IsPathing);
+			REL::Relocation<func_t> func{ REL::ID(989661) };
+			return func(this);
+		}
+
+		bool IsPathingComplete()
+		{
+			using func_t = decltype(&Actor::IsPathingComplete);
+			REL::Relocation<func_t> func{ REL::ID(817283) };
+			return func(this);
+		}
+
+		bool IsQuadruped()
+		{
+			using func_t = decltype(&Actor::IsQuadruped);
+			REL::Relocation<func_t> func{ REL::ID(1552322) };
+			return func(this);
+		}
+        
 		FIGHT_REACTION GetFactionFightReaction(Actor* a_actor)
 		{
 			using func_t = decltype(&Actor::GetFactionFightReaction);
