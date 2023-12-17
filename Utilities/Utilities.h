@@ -627,7 +627,7 @@ void MoveBendableSpline(TESObjectREFR* rope, NiPoint3 start, NiPoint3 end, TESOb
 	rope->extraList->SetBendableSplineInfo(&thickness, &slack, &offset);
 
 	if (useQueue) {
-		queue->QueueRebuildBendableSpline(rope, true, nullptr);
+		queue->QueueRebuildBendableSpline(*rope, true, nullptr);
 	}
 	else {
 		((TESObjectREFREx*)rope)->RebuildBendableSpline(false, nullptr);
