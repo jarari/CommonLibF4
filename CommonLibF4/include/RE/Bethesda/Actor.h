@@ -1202,6 +1202,8 @@ namespace RE
 			using func_t = decltype(&Actor::IsQuadruped);
 			REL::Relocation<func_t> func{ REL::ID(1552322) };
 			return func(this);
+		}
+        
 		FIGHT_REACTION GetFactionFightReaction(Actor* a_actor)
 		{
 			using func_t = decltype(&Actor::GetFactionFightReaction);
