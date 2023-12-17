@@ -277,29 +277,6 @@ namespace RE {
 		kPreProcessedNode = 1 << 26
 	};
 
-	class NiUpdateData {
-	public:
-		uint32_t unk00;
-		uint32_t unk04;
-		uint64_t unk08;
-		uint64_t unk10;
-		uint32_t unk18;
-	};
-
-	class BSAnimationGraphManager {
-	public:
-		bool Activate() {
-			using func_t = decltype(&RE::BSAnimationGraphManager::Activate);
-			REL::Relocation<func_t> func{ REL::ID(950096) };
-			return func(this);
-		}
-		bool Deactivate() {
-			using func_t = decltype(&RE::BSAnimationGraphManager::Deactivate);
-			REL::Relocation<func_t> func{ REL::ID(591084) };
-			return func(this);
-		}
-	};
-
 	class LoadedIdleAnimData {
 	public:
 		BSFixedString path;			//0x00
