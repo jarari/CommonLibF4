@@ -46,6 +46,19 @@ namespace RE
 		};
 		static_assert(sizeof(DependentManagerSmartPtr) == 0x08);
 
+		bool Activate()
+		{
+			using func_t = decltype(&RE::BSAnimationGraphManager::Activate);
+			REL::Relocation<func_t> func{ REL::ID(950096) };
+			return func(this);
+		}
+		bool Deactivate()
+		{
+			using func_t = decltype(&RE::BSAnimationGraphManager::Deactivate);
+			REL::Relocation<func_t> func{ REL::ID(591084) };
+			return func(this);
+		}
+
 		// members
 		BSTArray<BSTSmartPointer<BSAnimationGraphChannel>> boundChannel;   // 10
 		BSTArray<BSTSmartPointer<BSAnimationGraphChannel>> bumpedChannel;  // 28
